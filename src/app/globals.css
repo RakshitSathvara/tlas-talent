@@ -1,0 +1,163 @@
+/* Fonts must be imported before the Tailwind import (CSS @import ordering). */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Geist:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+ * Design tokens (design-system.md §2, §9.1) exposed as Tailwind v4 utilities.
+ * `--color-bg` -> bg-bg / text-bg / border-bg, etc.
+ * Colour is also available imperatively via `src/lib/tokens.ts` (the `c` object)
+ * for the inline-style cases the design system calls for (dynamic stage colour).
+ * ------------------------------------------------------------------------- */
+@theme {
+  --color-bg: #f2eee3;
+  --color-surface: #fbf9f2;
+  --color-paper: #ffffff;
+
+  --color-ink: #1a1816;
+  --color-ink-soft: #6e6a60;
+  --color-ink-softer: #a19d90;
+
+  --color-line: #e2dccb;
+  --color-line-strong: #c9c2ae;
+
+  --color-accent: #b8462a;
+  --color-accent-ink: #7a2d17;
+  --color-accent-soft: #f0ddcf;
+
+  --color-stage-sourced: #8b8579;
+  --color-stage-hr: #c8954e;
+  --color-stage-tl: #5a6f8c;
+  --color-stage-interview: #2d5266;
+  --color-stage-offer: #3a6b45;
+  --color-stage-hired: #1f4429;
+  --color-stage-rejected: #9b6b63;
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Fraunces", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+  /* Editorial focus ring (design-system.md §8) — never the default blue glow. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Typography helpers + the smallcaps eyebrow pattern (design-system.md §2.2).
+ * Defined unlayered so they apply reliably alongside utilities.
+ * ------------------------------------------------------------------------- */
+.font-sans {
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+.font-serif {
+  font-family: var(--font-serif);
+  font-feature-settings: "ss01";
+  letter-spacing: -0.01em;
+}
+.font-mono {
+  font-family: var(--font-mono);
+}
+.smallcaps {
+  font-variant: all-small-caps;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion (design-system.md §4). CSS-only, restrained, reduced-motion aware.
+ * ------------------------------------------------------------------------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.lift {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+.lift:hover {
+  transform: translateY(-1px);
+  border-color: var(--color-line-strong);
+  box-shadow: 0 8px 24px -12px rgba(26, 24, 22, 0.18);
+}
+
+.hairline {
+  background-image: linear-gradient(to right, var(--color-line) 50%, transparent 0);
+  background-size: 8px 1px;
+  background-repeat: repeat-x;
+  height: 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .anim-up {
+    animation: fadeUp 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .anim-in {
+    animation: fadeIn 320ms ease-out both;
+  }
+  .pulse-dot {
+    animation: pulseSoft 1.6s ease-in-out infinite;
+  }
+}
+
+/* When reduced motion is requested, content is simply present (no fade/slide). */
+@media (prefers-reduced-motion: reduce) {
+  .anim-up,
+  .anim-in {
+    opacity: 1;
+  }
+}
+
+/* Slim, warm scrollbar for the horizontal pipeline. */
+.scroll-soft::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.scroll-soft::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border-radius: 9999px;
+}
+.scroll-soft::-webkit-scrollbar-track {
+  background-color: transparent;
+}
